@@ -1,0 +1,55 @@
+CREATE DATABASE locadora;
+
+USE locadora;
+
+
+CREATE TABLE vestido(
+id			INT				NOT NULL AUTO_INCREMENT,
+cor			VARCHAR(50)		NOT NULL,
+tamanho		CHAR(4)			NOT NULL,
+estilo		VARCHAR(100)	NOT NULL,
+material	VARCHAR(70)		NOT NULL,
+situacao	INT 			NOT NULL DEFAULT 4,
+preco		DECIMAL(6,2)	NOT NULL,
+observacao	VARCHAR(100)	NOT NULL,
+PRIMARY KEY (id)
+);
+ALTER TABLE vestido
+AUTO_INCREMENT = 1111 ;
+SET @@auto_increment_increment = 11 ;
+
+CREATE TABLE cliente(
+id			INT				NOT NULL AUTO_INCREMENT,
+nome		VARCHAR(70)		NOT NULL,
+cpf			CHAR(11)		NOT NULL,
+email		VARCHAR(100)	NOT NULL,
+telefone	BIGINT			NOT NULL,
+dataNas		DATE			NOT NULL,
+PRIMARY KEY (id)
+);
+ALTER TABLE cliente
+AUTO_INCREMENT = 1000;
+SET @@auto_increment_increment = 10;
+
+ALTER TABLE cliente
+ADD CONSTRAINT check_idade
+CHECK (DATEDIFF(NOW(), dataNas)/365 > 17);
+
+CREATE TABLE aluguel(
+cliente_id	INT					NOT NULL,
+vestido_id	INT					NOT NULL,
+dataInicio	DATE				NOT NULL DEFAULT (NOW()),
+dataFim		DATE				NOT NULL,
+precoTotal	DECIMAL(6,2)		NOT NULL,
+situacao	BINARY(1)			NOT NULL DEFAULT 1	,
+PRIMARY KEY (cliente_id, vestido_id, dataInicio),
+FOREIGN KEY (cliente_id) REFERENCES cliente(id),
+FOREIGN KEY (vestido_id) REFERENCES vestido(id)
+);
+ALTER TABLE aluguel
+ADD CONSTRAINT check_dataInicio
+CHECK (dataInicio>dataFim);
+
+SELECT * FROM aluguel;
+SELECT * FROM vestido;
+SELECT * FROM cliente;
